@@ -1,0 +1,44 @@
+# =============================================================
+# NexGen Financial Experts — static export serving rules
+# For cPanel shared hosting (LiteSpeed/Apache). Ships with the
+# static export; safe to keep next to contact.php in public_html.
+# =============================================================
+
+# --- Security headers (mirror of next.config.ts) ---
+<IfModule mod_headers.c>
+Header always set X-Content-Type-Options "nosniff"
+Header always set X-Frame-Options "SAMEORIGIN"
+Header always set Referrer-Policy "strict-origin-when-cross-origin"
+Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), interest-cohort=()"
+Header always set X-DNS-Prefetch-Control "on"
+Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; frame-src 'self' https://www.openstreetmap.org https://www.google.com; frame-ancestors 'self'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests"
+</IfModule>
+
+# --- Basics ---
+Options -Indexes
+DirectoryIndex index.html
+ErrorDocument 404 /404.html
+
+# --- Block dotfiles (keeps .htaccess/.git invisible, allows ACME) ---
+<FilesMatch "^\.">
+  Require all denied
+</FilesMatch>
+
+# --- Legacy WordPress URLs → new pages (same as next.config.ts) ---
+RewriteEngine On
+RewriteRule ^aboutus/?$    /about/    [R=301,L]
+RewriteRule ^blog/?$       /insights/ [R=301,L]
+RewriteRule ^home/?$       /          [R=301,L]
+RewriteRule ^sample-page/?$ /         [R=301,L]
+
+# --- Long-cache immutable build assets ---
+<IfModule mod_headers.c>
+  <FilesMatch "\.(js|css|woff2?|png|jpe?g|webp|svg|ico)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+</IfModule>
+
+# NOTE: Force-HTTPS is intentionally NOT enabled here. Cloudflare terminates
+# TLS in front of this site; origin-side HTTPS redirects can cause redirect
+# loops depending on the Cloudflare SSL mode. Enable "Always Use HTTPS" in
+# the Cloudflare dashboard instead.

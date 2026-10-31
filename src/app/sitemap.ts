@@ -3,6 +3,9 @@ import { site } from "@/lib/site";
 import { services } from "@/lib/services";
 import { articles } from "@/lib/articles";
 
+// Required for `output: "export"`; already static in server mode.
+export const dynamic = "force-static";
+
 export default function sitemap(): MetadataRoute.Sitemap {
   const base = site.url;
   const now = new Date();
