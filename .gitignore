@@ -52,3 +52,5 @@ prompt
 server.log
 # Skills directory
 /skills/
+# local uploads (may contain sensitive client files — never commit)
+upload/
