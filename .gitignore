@@ -54,3 +54,6 @@ server.log
 /skills/
 # local uploads (may contain sensitive client files — never commit)
 upload/
+
+# local sqlite dev data
+db/*.db
